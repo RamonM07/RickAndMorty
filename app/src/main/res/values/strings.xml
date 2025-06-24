@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Rick And Morty</string>
+    <string name="title_login">Iniciar Sesión</string>
+    <string name="title_register">¿No tienes cuenta? Registrarse</string>
+    <string name="title_email">Correo electrónico</string>
+    <string name="title_password">Contraseña</string>
+    <string name="title_login_button">Entrar</string>
+    <string name="title_register_button">Registrarse</string>
+    <string name="title_error">Error</string>
+
 </resources>

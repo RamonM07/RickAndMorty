@@ -5,30 +5,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 
 val RickAndMortyLightColors = lightColorScheme(
-    primary = RickGreen,
-    onPrimary = RickBlack,
-    secondary = RickPurple,
-    onSecondary = RickCyan,
-    background = Color.White,
-    onBackground = RickBlack,
-    surface = RickCyan,
-    onSurface = RickBlack,
-    tertiary = RickYellow
+    primary = OliveGreen,
+    onPrimary = White,
+    secondary = MustardYellow,
+    onSecondary = NeutralBrown,
+    background = SoftBeige,
+    onBackground = NeutralBrown,
+    surface = SoftBlue,
+    onSurface = NeutralBrown,
+    tertiary = NeutralBrown
 )
 
 val RickAndMortyDarkColors = darkColorScheme(
-    primary = RickGreen,
-    onPrimary = RickBlack,
-    secondary = RickPurple,
-    onSecondary = RickCyan,
-    background = RickBlack,
-    onBackground = RickGreen,
-    surface = RickPurple,
-    onSurface = RickGreen,
+    primary = OliveGreen,
+    onPrimary = Black,
+    secondary = MustardYellow,
+    onSecondary = Black,
+    background = DarkBackground,
+    onBackground = SoftBeige,
+    surface = NeutralBrown,
+    onSurface = SoftBeige,
+    tertiary = SoftBlue
 )
 
 @Composable
