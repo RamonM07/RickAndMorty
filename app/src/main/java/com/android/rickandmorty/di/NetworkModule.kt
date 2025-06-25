@@ -2,7 +2,10 @@ package com.android.rickandmorty.di
 
 import android.content.Context
 import com.android.rickandmorty.domain.EpisodesRepository
+import com.android.rickandmorty.domain.auth.AuthRepository
+import com.android.rickandmorty.repository.AuthRepositoryImpl
 import com.android.rickandmorty.repository.RickAndMortyService
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,4 +54,15 @@ object NetworkModule {
     fun provideMyRepository(
         api: RickAndMortyService
     ): EpisodesRepository = EpisodesRepository(api)
+
+
+    @Provides
+    fun provideFirebaseAuth(): FirebaseAuth
+    {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    fun provideAuthRepository(auth: FirebaseAuth): AuthRepository =
+        AuthRepositoryImpl(auth)
 }

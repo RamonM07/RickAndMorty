@@ -10,17 +10,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.rickandmorty.data.local.AuthUiState
 import com.android.rickandmorty.ui.theme.RickAndMortyTheme
+import com.android.rickandmorty.ui.view.viewModel.AuthViewModel
 
 @Composable
 fun RegisterScreen(
+    viewModel: AuthViewModel = hiltViewModel(),
     onRegisterSuccess: () -> Unit,
-    onNavigateToLogin: () -> Unit,
-    register: (email: String, password: String, callback: (Boolean, String?) -> Unit) -> Unit
+    onNavigateToLogin: () -> Unit
 ) {
     var registerData by remember { mutableStateOf(RegisterData()) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var loading by remember { mutableStateOf(false) }
+    var localErrorMessage by remember { mutableStateOf<String?>(null) }
+
+    val authState by viewModel.authState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -73,34 +77,33 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        errorMessage?.let {
+        localErrorMessage?.let {
             Text(text = it, color = MaterialTheme.colorScheme.error)
             Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        if (authState is AuthUiState.Error) {
+            val error = (authState as AuthUiState.Error).message
+            Text(text = error ?: "Error desconocido", color = MaterialTheme.colorScheme.error)
         }
 
         Button(
             onClick = {
                 val validationError = registerData.validationMessage()
                 if (validationError != null) {
-                    errorMessage = validationError
+                    localErrorMessage = validationError
                 } else {
-                    errorMessage = null
-                    loading = true
-                    register(registerData.email, registerData.password) { success, error ->
-                        loading = false
-                        if (success) {
-                            onRegisterSuccess()
-                        } else {
-                            errorMessage = error ?: "Ocurrió un error"
-                        }
-                    }
-                    onRegisterSuccess()
+                    localErrorMessage = null
+                    viewModel.register(
+                        registerData.email.trim(),
+                        registerData.password.trim()
+                    )
                 }
             },
-            enabled = !loading,
+            enabled = authState !is AuthUiState.Loading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (loading) {
+            if (authState is AuthUiState.Loading) {
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(20.dp),
@@ -117,15 +120,21 @@ fun RegisterScreen(
             Text("¿Ya tienes cuenta? Inicia sesión")
         }
     }
+
+    if (authState is AuthUiState.Success) {
+        LaunchedEffect(Unit) {
+            onRegisterSuccess()
+        }
+    }
 }
+
 
 @Preview
 @Composable
 private fun RegisterScreenPreview() {
     RickAndMortyTheme {
         RegisterScreen(
-            onRegisterSuccess = {}, onNavigateToLogin = {},
-            register = { _, _, _ -> }
+            onRegisterSuccess = {}, onNavigateToLogin = {}
         )
     }
 }
@@ -152,4 +161,5 @@ data class RegisterData(
         }
     }
 }
+
 

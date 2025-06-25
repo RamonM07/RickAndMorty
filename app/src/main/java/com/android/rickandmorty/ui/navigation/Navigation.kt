@@ -36,24 +36,24 @@ fun AppNavGraph(modifier: Modifier, navController: NavHostController, isAuthenti
             DetailEpisodeScreen(modifier, episode = Episode(1, "Pilot", "December 2, 2013", "S01E01"))
         }
         composable(Screen.Register.route) {
-            RegisterScreen({
+            RegisterScreen(onRegisterSuccess = {
                 navController.navigate(Screen.Home.route) {
                     popUpTo(Screen.Login.route) {
                         inclusive = true
                     }
                 }
-            },{
+            }, onNavigateToLogin = {
                 navController.popBackStack()
-            },{_,_,_ ->})
+            })
         }
         composable(Screen.Login.route) {
-            LoginScreen(modifier, {
+            LoginScreen(modifier = modifier, onLoginSuccess = {
                 navController.navigate(Screen.Home.route){
                     popUpTo(Screen.Login.route){
                         inclusive = true
                     }
                 }
-            },{
+            }, onNavigateToRegister = {
                 navController.navigate(Screen.Register.route)
             })
         }

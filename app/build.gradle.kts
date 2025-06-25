@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    id("com.google.gms.google-services") version "4.4.2" apply false
 }
 
 android {
@@ -47,6 +48,10 @@ dependencies {
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime)
 
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.auth.ktx)
+    implementation (libs.kotlinx.coroutines.play.services)
 
     // Dagger Hilt
     implementation(libs.hilt.android)
