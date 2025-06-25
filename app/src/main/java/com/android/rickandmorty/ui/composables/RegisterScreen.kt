@@ -25,14 +25,15 @@ fun RegisterScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Registrarse",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 16.dp),
+            style = MaterialTheme.typography.headlineSmall
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -93,6 +94,7 @@ fun RegisterScreen(
                             errorMessage = error ?: "Ocurrió un error"
                         }
                     }
+                    onRegisterSuccess()
                 }
             },
             enabled = !loading,
@@ -133,7 +135,6 @@ data class RegisterData(
     val password: String = "",
     val confirmPassword: String = ""
 ) {
-    // Valida que los campos estén completos y las contraseñas coincidan
     fun isValid(): Boolean {
         return email.isNotBlank()
                 && password.isNotBlank()
@@ -141,7 +142,6 @@ data class RegisterData(
                 && password == confirmPassword
     }
 
-    // Retorna mensaje de error si hay algún problema, o null si es válido
     fun validationMessage(): String? {
         return when {
             email.isBlank() -> "El correo es obligatorio"
