@@ -1,9 +1,8 @@
 package com.android.rickandmorty.di
 
-import com.android.rickandmorty.repository.EpisodesRepositoryImplement
+import android.content.Context
 import com.android.rickandmorty.domain.EpisodesRepository
 import com.android.rickandmorty.repository.RickAndMortyService
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,7 +23,7 @@ object NetworkModule {
         return NetworkStatusTracker(context)
     }
 
-    private const val BASE_URL = "https://rickandmortyapi.com/api"
+    private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
     @Provides
     @Singleton
@@ -51,5 +50,5 @@ object NetworkModule {
     @Singleton
     fun provideMyRepository(
         api: RickAndMortyService
-    ): EpisodesRepository = EpisodesRepositoryImplement(api)
+    ): EpisodesRepository = EpisodesRepository(api)
 }

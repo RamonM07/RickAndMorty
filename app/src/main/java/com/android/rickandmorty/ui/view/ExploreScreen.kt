@@ -2,11 +2,13 @@ package com.android.rickandmorty.ui.view
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,26 +18,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.android.rickandmorty.ui.composables.Episode
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.android.rickandmorty.R
+import com.android.rickandmorty.data.model.Episode
 import com.android.rickandmorty.ui.composables.EpisodeCard
+import com.android.rickandmorty.ui.view.viewModel.EpisodesViewModel
 
 @Composable
 fun ExploreScreen(
     modifier: Modifier = Modifier,
-    episodes: List<Episode>,
+    viewModel: EpisodesViewModel = hiltViewModel(),
     onEpisodeClick: (Episode) -> Unit
 ) {
-    var searchQuery by remember{ mutableStateOf("") }
+    val episodes = viewModel.episodes.collectAsLazyPagingItems()
 
-    val filteredEpisodes = episodes.filter { episode ->
+    var searchQuery by remember { mutableStateOf("") }
+
+    val filteredEpisodes = episodes.itemSnapshotList.items.filter { episode ->
         episode.name.contains(searchQuery, ignoreCase = true) ||
                 episode.episode.contains(searchQuery, ignoreCase = true)
     }
 
     Column(modifier = modifier) {
         Text(
-            text = "Explorar Episodios",
+            text = stringResource(R.string.title_explore_episodes),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
@@ -43,7 +53,7 @@ fun ExploreScreen(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Buscar por nombre o código") },
+            placeholder = { Text(stringResource(R.string.message_serch_field)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
@@ -52,25 +62,50 @@ fun ExploreScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        LazyColumn {
-            items(filteredEpisodes) { episode ->
-                EpisodeCard(
-                    episode = episode,
-                    onClick = { onEpisodeClick(episode) }
-                )
-            }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            if (searchQuery.isNotEmpty()) {
+                if (filteredEpisodes.isEmpty()) {
+                    item {
+                        Text(
+                            text = stringResource(R.string.message_empty_filtered),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        )
+                    }
+                } else {
+                    items(filteredEpisodes) { episode ->
+                        EpisodeCard(episode = episode, onClick = { onEpisodeClick(episode) })
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
 
-            if (filteredEpisodes.isEmpty()) {
-                item {
-                    Text(
-                        text = "No se encontraron episodios",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                    )
+            } else {
+                items(episodes.itemCount) { index ->
+                    val episode = episodes.itemSnapshotList.items[index]
+                    episode.let {
+                        EpisodeCard(episode = it, onClick = { onEpisodeClick(it) })
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+                episodes.apply {
+                    when (loadState.append) {
+                        is LoadState.Loading -> item {
+                            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                        }
+
+                        is LoadState.Error -> item {
+                            Text(stringResource(R.string.message_error_in_load))
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }
+
     }
 }

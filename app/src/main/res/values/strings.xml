@@ -7,5 +7,10 @@
     <string name="title_login_button">Entrar</string>
     <string name="title_register_button">Registrarse</string>
     <string name="title_error">Error</string>
+    <string name="message_empty_filtered">No se encontraron episodios que coincidan con la búsqueda</string>
+    <string name="message_error_in_load">Error al cargar más episodios</string>
+    <string name="title_explore_episodes">Explorar Episodios</string>
+    <string name="message_serch_field">Buscar por nombre o código del episodio</string>
+    <string name="message_date_emitted">Emitido: %1$s</string>
 
 </resources>

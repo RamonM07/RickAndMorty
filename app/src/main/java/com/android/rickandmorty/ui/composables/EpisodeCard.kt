@@ -10,7 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.rickandmorty.R
+import com.android.rickandmorty.data.model.Episode
 
 @Composable
 fun EpisodeCard(
@@ -37,17 +40,10 @@ fun EpisodeCard(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "Emitido: ${episode.airDate}",
+                text = stringResource(R.string.message_date_emitted, episode.airDate),
                 style = MaterialTheme.typography.bodySmall
             )
         }
     }
 }
-
-data class Episode(
-    val id: Int,
-    val name: String,
-    val episode: String,
-    val airDate: String
-)
 

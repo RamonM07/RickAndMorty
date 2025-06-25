@@ -43,6 +43,11 @@ android {
 
 dependencies {
 
+    // Paging
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
+
+
     // Dagger Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
